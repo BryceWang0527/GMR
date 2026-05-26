@@ -12,6 +12,16 @@ if __name__ == "__main__":
     parser.add_argument("--record_video", action="store_true")
     parser.add_argument("--video_path", type=str, 
                         default="videos/example.mp4")
+    parser.add_argument(
+        "--step",
+        action="store_true",
+        help="逐帧播放模式（空格/回车播放下一帧）",
+    )
+    parser.add_argument(
+        "--reverse",
+        action="store_true",
+        help="倒放（从最后一帧往第一帧播放）",
+    )
                         
     args = parser.parse_args()
     
@@ -28,13 +38,61 @@ if __name__ == "__main__":
                             camera_follow=False,
                             record_video=args.record_video, video_path=args.video_path)
     
-    frame_idx = 0
-    while True:
-        env.step(motion_root_pos[frame_idx], 
-                motion_root_rot[frame_idx], 
-                motion_dof_pos[frame_idx], 
-                rate_limit=True)
-        frame_idx += 1
-        if frame_idx >= len(motion_root_pos):
-            frame_idx = 0
+    num_frames = len(motion_root_pos)
+    # 倒放时从最后一帧开始，否则从第 0 帧开始
+    frame_idx = (num_frames - 1) if args.reverse else 0
+    step = -1 if args.reverse else 1
+
+    if args.step:
+        direction = "上一帧" if args.reverse else "下一帧"
+        print(f"逐帧模式：按空格 + 回车 播放{direction}，输入 q + 回车 退出。")
+
+        while True:
+            cmd = input(f"[{frame_idx+1}/{num_frames}] 按空格继续，q 退出: ").strip()
+
+            if cmd.lower() == "q":
+                break
+
+            # 允许直接回车或输入空格代表下一帧/上一帧
+            if cmd in ("", " "):
+                env.step(
+                    motion_root_pos[frame_idx],
+                    motion_root_rot[frame_idx],
+                    motion_dof_pos[frame_idx],
+                    rate_limit=True,
+                )
+                frame_idx += step
+                if frame_idx >= num_frames:
+                    frame_idx = 0
+                elif frame_idx < 0:
+                    frame_idx = num_frames - 1
+    else:
+        # 自动循环播放（正放或倒放）
+        while True:
+            env.step(
+                motion_root_pos[frame_idx],
+                motion_root_rot[frame_idx],
+                motion_dof_pos[frame_idx],
+                rate_limit=True,
+            )
+            frame_idx += step
+            if frame_idx >= num_frames:
+                frame_idx = 0
+            elif frame_idx < 0:
+                frame_idx = num_frames - 1
+
     env.close()
+
+#old file
+# 85 140
+# 225 310
+
+#new file
+# 30 140
+# 225 340
+
+# kcrawl_edit3
+# 120
+
+# omni 7dof 
+# 120

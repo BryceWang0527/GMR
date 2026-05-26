@@ -124,7 +124,22 @@ class RobotMotionViewer:
             self.viewer.cam.distance = self.viewer_cam_distance
             self.viewer.cam.elevation = -10  # 正面视角，轻微向下看
             # self.viewer.cam.azimuth = 180    # 正面朝向机器人
-        
+        human_to_robot_map = {
+            "pelvis": "pelvis",
+            "left_hip": "hip_roll_l_link",
+            "left_knee": "knee_pitch_l_link",
+            "left_foot": "ankle_roll_l_link",
+            "right_hip": "hip_roll_r_link",
+            "right_knee": "knee_pitch_r_link",
+            "right_foot": "ankle_roll_r_link",
+            "left_shoulder": "shoulder_pitch_l_link",
+            "left_elbow": "elbow_pitch_l_link",
+            "right_shoulder": "shoulder_pitch_r_link",
+            "right_elbow": "elbow_pitch_r_link",
+            "head": "head_yaw_link",
+            "left_wrist": "left_hand",
+            "right_wrist": "right_hand"
+        }
         if human_motion_data is not None:
             # Clean custom geometry
             self.viewer.user_scn.ngeom = 0
@@ -137,6 +152,29 @@ class RobotMotionViewer:
                     human_point_scale,
                     pos_offset=human_pos_offset,
                     joint_name=human_body_name if show_human_body_name else None
+                    )
+                # if human_body_name == "pelvis":
+                #     print(rot)
+                # print(f"body:{human_body_name} pos:{pos} rot:{rot}")
+                
+                if human_body_name in human_to_robot_map:
+                    robot_body_name = human_to_robot_map[human_body_name]
+                    body_id = mj.mj_name2id(self.model, mj.mjtObj.mjOBJ_BODY, robot_body_name)
+
+                    r_pos = self.data.xpos[body_id]                       # 世界坐标位置
+                    r_rot = self.data.xmat[body_id].reshape(3, 3)        # 世界坐标旋转矩阵
+
+                    r_quat = R.from_matrix(r_rot).as_quat()
+                    # print(f"Robot: {robot_body_name} pos:{r_pos} rot:{r_quat.tolist()}")
+                    # if robot_body_name == "pelvis":
+                    #     print(r_quat.tolist())
+
+                    draw_frame(
+                        r_pos,
+                        r_rot,
+                        self.viewer,
+                        size=0.3,                      # 坐标轴长度，可调
+                        joint_name=robot_body_name if show_human_body_name else None  # 显示 body 名字
                     )
 
         self.viewer.sync()

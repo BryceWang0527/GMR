@@ -21,6 +21,10 @@ ROBOT_XML_DICT = {
     "booster_k1": ASSET_ROOT / "booster_k1" / "K1_serial.xml",
     "pnd_adam_lite": ASSET_ROOT / "pnd_adam_lite" / "scene.xml",
     "tienkung": ASSET_ROOT / "tienkung" / "mjcf" / "tienkung.xml",
+    "ultra": ASSET_ROOT / "ultra_encos_temp" / "mjcf" / "humanoid_encos.xml",
+    "ultra2": ASSET_ROOT / "ultra2" / "mjcf" / "Totalassembly.xml",
+    "xrx": ASSET_ROOT / "xrx" / "mjcf" / "XRX_WB_toe.xml",
+    "omni_7dof": ASSET_ROOT / "omni_7dof" / "mjcf" / "urdfomni20260105.xml",
 }
 
 IK_CONFIG_DICT = {
@@ -42,6 +46,10 @@ IK_CONFIG_DICT = {
         "booster_k1": IK_CONFIG_ROOT / "smplx_to_k1.json",
         "pnd_adam_lite": IK_CONFIG_ROOT / "smplx_to_adam.json",
         "tienkung": IK_CONFIG_ROOT / "smplx_to_tienkung.json",
+        "ultra": IK_CONFIG_ROOT / "smplx_to_ultra.json",
+        "ultra2": IK_CONFIG_ROOT / "smplx_to_ultra2.json",
+        "xrx": IK_CONFIG_ROOT / "smplx_to_xrx.json",
+        "omni_7dof": IK_CONFIG_ROOT / "smplx_to_omni_7dof.json",
     },
     "bvh":{
         "unitree_g1": IK_CONFIG_ROOT / "bvh_to_g1.json",
@@ -78,6 +86,10 @@ ROBOT_BASE_DICT = {
     "booster_k1": "Trunk",
     "pnd_adam_lite": "pelvis",
     "tienkung": "Base_link",
+    "ultra": "pelvis",
+    "ultra2": "pelvis",
+    "xrx": "base_link",
+    "omni_7dof": "base_link",
 }
 
 VIEWER_CAM_DISTANCE_DICT = {
@@ -97,4 +109,8 @@ VIEWER_CAM_DISTANCE_DICT = {
     "booster_k1": 2.0,
     "pnd_adam_lite": 3.0,
     "tienkung": 3.0,
+    "ultra": 3.0,
+    "ultra2": 3.0,
+    "xrx": 3.0,
+    "omni_7dof": 3.0,
 }
